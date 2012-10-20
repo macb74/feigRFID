@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="CON_TYPE">Serial</entry>
+<entry key="HOST">192.168.178.201</entry>
+<entry key="PORT">10001</entry>
+<entry key="SerialPort">2</entry>
+<entry key="SerialFrame">8E1</entry>
+<entry key="SerialBaud">38400</entry>
+<entry key="TIMEOUT">3000</entry>
+<entry key="SLEEPTIME">5000</entry>
+<entry key="SETS">255</entry>
+<entry key="DBUSER">root</entry>
+<entry key="DBPASS"></entry>
+<entry key="DBURL">jdbc:mysql://localhost:3306/myrun_test</entry>
+<entry key="vID">99</entry>
+<entry key="lID">99</entry>
+<entry key="uniqeID">0</entry>
+<entry key="FILENAME">brm-result.csv</entry>
+<entry key="RESULT_FILENAME">lapCountResult.csv</entry>
+<entry key="LOG">1</entry>
+<entry key="USE_MEMORY_DB">0</entry>
+</properties>

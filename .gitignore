@@ -1,0 +1,6 @@
+/.settings
+/bin
+/Result-DB
+/*.csv
+/*.log
+/*.dll
