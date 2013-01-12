@@ -112,7 +112,7 @@ public class WriteTag implements Runnable, FeIscListener {
 		try {
 
 			String pre = "24310C";
-			String oldSnr = sNr;
+			String oldSnr = snr;
 			String middle = "01000107023000";
 			String requestData = pre + oldSnr + middle + newSnr;
 			//System.out.println("writ sNr: " + newSnr);
@@ -280,7 +280,7 @@ public class WriteTag implements Runnable, FeIscListener {
     private String uniqeNr;
 	private String stNr;
 	private int intStNr;
-	public String sNr = "";
+	private String sNr = "";
 	private FeigGuiListener feigGuiListener;
 
 }
