@@ -111,10 +111,14 @@ public class WriteTag implements Runnable, FeIscListener {
 		
 		try {
 
-			String pre = "24310C";
+			String pre = "2431";
+			String oldSnrLen = getSnrLenHex(snr);
+			
+			System.out.println(oldSnrLen);
+			
 			String oldSnr = snr;
 			String middle = "01000107023000";
-			String requestData = pre + oldSnr + middle + newSnr;
+			String requestData = pre + oldSnrLen + oldSnr + middle + newSnr;
 			//System.out.println("writ sNr: " + newSnr);
 			fedm.sendProtocol((byte) 0xB0, requestData);
 			
@@ -134,6 +138,13 @@ public class WriteTag implements Runnable, FeIscListener {
 
 		return true;
 
+	}
+
+	private String getSnrLenHex(String snr) {
+		int snrLenInt = snr.length()/2;
+		String snrLenHex = Integer.toHexString(snrLenInt);
+		snrLenHex = 0 + snrLenHex;
+		return snrLenHex;
 	}
 
 	private int isoReadTag() {
