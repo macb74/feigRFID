@@ -27,7 +27,7 @@ public class WriteTag implements Runnable, FeIscListener {
 				}
 		
 				String newSnr = uniqeNr + stNr;
-				while (newSnr.length() != 24) {
+				while (newSnr.length() != 8) {
 					newSnr = "0" + newSnr;
 				}
 								
@@ -111,14 +111,32 @@ public class WriteTag implements Runnable, FeIscListener {
 		
 		try {
 
-			String pre = "2431";
-			String oldSnrLen = getSnrLenHex(snr);
+			String hostCommand 		= "24";
+			String mode 			= "31";
+			//String pre = "2431";
+			String oldEpcLng 		= getSnrLenHex(snr);
+			String oldEPC 			= snr;
+			String epcMemoryBank 	= "01";
+			String setPassword		= "00";
+			String dbAdr			= "01";
+			String dbNoOfBlocks		= "03";
+			String dbBlockSize		= "02";
+			String dataBlock		= "1000";
 			
-			System.out.println(oldSnrLen);
+//			String middle = "01000107023000";
+			String requestData = hostCommand + 
+					mode + 
+					oldEpcLng + 
+					oldEPC + 
+					epcMemoryBank + 
+					setPassword + 
+					dbAdr + 
+					dbNoOfBlocks + 
+					dbBlockSize + 
+					dataBlock + 
+					newSnr;
 			
-			String oldSnr = snr;
-			String middle = "01000107023000";
-			String requestData = pre + oldSnrLen + oldSnr + middle + newSnr;
+//			String requestData = pre + oldSnrLen + oldSnr + middle + newSnr;
 			//System.out.println("writ sNr: " + newSnr);
 			fedm.sendProtocol((byte) 0xB0, requestData);
 			
@@ -198,9 +216,14 @@ public class WriteTag implements Runnable, FeIscListener {
 	}
 
 	private static String getUniqeNumber() {
-		Date now = new java.util.Date();
-		java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
-		return df.format(now);
+		// Date now = new java.util.Date();
+		// java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
+		// return df.format(now);
+		
+		// generiert eine Zufallszahl zwischen 4096 (Hex: 1000) und 65535 (Hex: FFFF)
+		int randomInt = (int)Math.floor(Math.random()*(65535-4096))+4096;
+		String randomHex = Integer.toHexString(randomInt);
+		return randomHex;
 	}
 
 	private static String stnrTo4DigitString(int intStNr) {
