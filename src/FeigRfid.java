@@ -832,7 +832,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	}
 
 	private void jButtonSetStartTimeActionPerformed(ActionEvent evt) {
-		if(sTime.equals("00:00:00") || jTextFieldStartTime.getText().equals("")) {
+		if((sTime.equals("00:00:00") && (jTextFieldStartTime.getText().equals("00:00:00")))|| jTextFieldStartTime.getText().equals("")) {
 			String now = new SimpleDateFormat("HH:mm:ss").format(new Date());
 			sTime = now;
 			jTextFieldStartTime.setText(sTime);
