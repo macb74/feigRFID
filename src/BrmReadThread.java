@@ -106,7 +106,8 @@ public class BrmReadThread implements Runnable, FeIscListener {
                 String[] antNr           = new String[brmItems.length];
 
                 String cTime = getComputerTime();
-				openCsv();
+				
+				CsvWriter.openFile(fileName);
 				
                 for (int i = 0; i < brmItems.length; i++) {
                 	if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_SNR)) {
@@ -168,9 +169,19 @@ public class BrmReadThread implements Runnable, FeIscListener {
                     }
 					
 					String antNrDual = getDualValue(antNr[i]);
-					
+
+					String[] csvFileContent = new String[7];
+					csvFileContent[0] = Integer.toString(vID);
+					csvFileContent[1] = Integer.toString(lID);
+					csvFileContent[2] = Integer.toString(serialNumber[i]);
+					csvFileContent[3] = time[i];
+					csvFileContent[4] = antNrDual;
+					csvFileContent[5] = uniqeNumber[i];
+					csvFileContent[6] = cTime;
+
+                    CsvWriter.write(csvFileContent);
+
                     LogWriter.write(serialNumberHex[i] + " - " + antNrDual + " - " + serialNumber[i] + "\n");
-					csvFile.append(vID + ";" + lID + ";" + serialNumber[i] + ";" + time[i].substring(0, 8) + ";" + antNrDual + ";" + uniqeNumber[i] + ";" + cTime + ";\n");
 
 					derbyInsertString += "('" + cTime + "', '" + time[i].substring(0, 8) + "', '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
 					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + time[i] +"', '" + host + "')";
@@ -181,7 +192,8 @@ public class BrmReadThread implements Runnable, FeIscListener {
 					}
                 }
 
-	            closeCsv();
+
+                CsvWriter.closeFile();
 	            
 				Connection derbyCn = Derby.derbyConnect();
                 statusDerby = Derby.derbyUpdate(derbyInsertString, derbyCn);		            

@@ -17,13 +17,31 @@ public class DataTableWriteToCsvThread implements Runnable {
 
 	public void writeToCsvFile(String[][] tableData) {
 
+		int csvFormat = 0;
+		
+		if(ReadConfig.getConfig().getString("RESULT_FORMAT") != null) {
+			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equals("winlaufen")) {
+				csvFormat = 1;
+			}
+		}
+				
+		switch (csvFormat) {
+		case 0: lapCountResult(tableData);
+		        break;
+		case 1: winlaufenResult(tableData);
+				break;
+		}
+				
+	}
+
+	private void lapCountResult(String[][] tableData) {
 		for (int i = 0; i < tableData.length; i++) {
 			String st = tableData[i][0];
 			String rd = tableData[i][1];
 			String rt = tableData[i][2];
 			String sn = tableData[i][3];
 			String lt = CalculateTime.calcTime(sTime, rt);
-
+	
 			try {
 				outFile.append(Integer.toString(i) + ";" + st + ";" + rd + ";" + rt + ";" + lt + ";" + sn + "\n");
 			} catch (IOException e) {
@@ -32,9 +50,25 @@ public class DataTableWriteToCsvThread implements Runnable {
 			}
 			//System.out.println(Integer.toString(i) + ";" + st + ";" + rd + ";" + rt + ";" + lt + ";" + sn + "\n");
 		}
-
+	}
+	
+	private void winlaufenResult(String[][] tableData) {
+		for (int i = 0; i < tableData.length; i++) {
+			String st = tableData[i][0];
+			String rt = tableData[i][2];
+			String lt = CalculateTime.calcTime(sTime, rt) + ".0";
+	
+			try {
+				outFile.append(st + ";" + lt + "\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//System.out.println(Integer.toString(i) + ";" + st + ";" + rd + ";" + rt + ";" + lt + ";" + sn + "\n");
+		}
 	}
 
+	
 	public void openFile() {
 	  	try {
 	  		outFile = new FileWriter(ReadConfig.getConfig().getString("RESULT_FILENAME"), false);
