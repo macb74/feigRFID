@@ -7,10 +7,13 @@ public class DataTableWriteToCsvThread implements Runnable {
 	private static FileWriter outFile;
 	private String[][] tableData;
 	private String sTime;
+	private String filename;
+	private int vID;
+	private int lID;
 	
 	@Override
 	public void run() {
-		openFile();
+		openFile(filename);
 		writeToCsvFile(tableData);
 		closeFile();
 	}
@@ -20,15 +23,20 @@ public class DataTableWriteToCsvThread implements Runnable {
 		int csvFormat = 0;
 		
 		if(ReadConfig.getConfig().getString("RESULT_FORMAT") != null) {
-			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equals("winlaufen")) {
+			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equals("opentiming")) {
 				csvFormat = 1;
+			}
+			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equals("winlaufen")) {
+				csvFormat = 2;
 			}
 		}
 				
 		switch (csvFormat) {
 		case 0: lapCountResult(tableData);
 		        break;
-		case 1: winlaufenResult(tableData);
+		case 1: openTimingResult(tableData);
+        		break;
+		case 2: winlaufenResult(tableData);
 				break;
 		}
 				
@@ -40,38 +48,58 @@ public class DataTableWriteToCsvThread implements Runnable {
 			String rd = tableData[i][1];
 			String rt = tableData[i][2];
 			String sn = tableData[i][3];
-			String lt = CalculateTime.calcTime(sTime, rt);
+			String zt = CalculateTime.calcTime(sTime, rt);
 	
 			try {
-				outFile.append(Integer.toString(i) + ";" + st + ";" + rd + ";" + rt + ";" + lt + ";" + sn + "\n");
+				outFile.append(Integer.toString(i) + ";" + st + ";" + rd + ";" + rt + ";" + zt + ";" + sn + "\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//System.out.println(Integer.toString(i) + ";" + st + ";" + rd + ";" + rt + ";" + lt + ";" + sn + "\n");
 		}
 	}
 	
 	private void winlaufenResult(String[][] tableData) {
 		for (int i = 0; i < tableData.length; i++) {
 			String st = tableData[i][0];
+			String rd = tableData[i][1];
 			String rt = tableData[i][2];
-			String lt = CalculateTime.calcTime(sTime, rt) + ".0";
+			String zt = CalculateTime.calcTime(sTime, rt) + ".0";
 	
 			try {
-				outFile.append(st + ";" + lt + "\n");
+				outFile.append(st + ";" + zt + ";" + rd +"\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//System.out.println(Integer.toString(i) + ";" + st + ";" + rd + ";" + rt + ";" + lt + ";" + sn + "\n");
 		}
 	}
 
+
+	private void openTimingResult(String[][] tableData) {
+		for (int i = 0; i < tableData.length; i++) {
+			String st = tableData[i][0];
+			String rd = tableData[i][1];
+			String rt = tableData[i][2];
+			String sn = tableData[i][3];
+			String zt = CalculateTime.calcTime(sTime, rt);
 	
-	public void openFile() {
+			try {
+				outFile.append( vID + ";" + lID + ";" + st + ";" + rt + ";" + Integer.toString(i) + ";" + rd + ";" + zt + ";" + sn + "\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+
+	
+	
+	
+	public void openFile(String filename) {
 	  	try {
-	  		outFile = new FileWriter(ReadConfig.getConfig().getString("RESULT_FILENAME"), false);
+	  		outFile = new FileWriter(filename, false);
 	  		outFile.write("");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -95,5 +123,14 @@ public class DataTableWriteToCsvThread implements Runnable {
 
 	public void setStartTime(String sTime) {
 		this.sTime = sTime;
+	}
+	
+	public void setFileName(String filename) {
+		this.filename = filename;
+	}
+	
+	public void setId(int[] id) {
+		this.vID = id[0];
+		this.lID = id[1];
 	}
 }

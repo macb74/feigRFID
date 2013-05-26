@@ -16,9 +16,8 @@
 <entry key="vID">99</entry>
 <entry key="lID">99</entry>
 <entry key="uniqeID">0</entry>
-<entry key="FILENAME">brm-result.csv</entry>
-<entry key="RESULT_FORMAT">winlaufen</entry>
-<entry key="RESULT_FILENAME">lapCountResult.csv</entry>
+<entry key="RESULT_FORMAT">opentiming</entry>
+<entry key="RESULT_FILENAME">result.csv</entry>
 <entry key="LOG">1</entry>
 <entry key="USE_MEMORY_DB">0</entry>
 </properties>

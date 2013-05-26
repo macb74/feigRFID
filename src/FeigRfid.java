@@ -667,7 +667,6 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        brmReadThread.setFedmIscReader(fedm);
 	        brmReadThread.setHost(jTextFieldIp.getText());
 	        brmReadThread.setSleepTime(Integer.parseInt(jTextFieldSleepTime.getText())*1000);
-	        brmReadThread.setFileName(jTextFieldFileName.getText());
 	        brmReadThread.setSets(ReadConfig.getConfig().getInt("SETS"));
 			brmReadThread.setDB(databaseCheckBox.isSelected());
 			brmReadThread.setId(id);
@@ -839,6 +838,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 		} else {
 			sTime = jTextFieldStartTime.getText();
 		}
+		onGetReaderSets(true);
 	}
 	
 	private void jButtonClearReadTableActionPerformed(ActionEvent evt) {
@@ -981,7 +981,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	private static void setConfigValues() {
 		jTextFieldIp.setText(ReadConfig.getConfig().getString("HOST"));
 		jTextFieldSleepTime.setText(Integer.toString(ReadConfig.getConfig().getInt("SLEEPTIME")/1000));
-		jTextFieldFileName.setText(ReadConfig.getConfig().getString("FILENAME"));
+		jTextFieldFileName.setText(ReadConfig.getConfig().getString("RESULT_FILENAME"));
 		jTextFieldVID.setText(ReadConfig.getConfig().getString("vID"));
 		jTextFieldLID.setText(ReadConfig.getConfig().getString("lID"));
 	}
@@ -993,7 +993,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			readDataTable.setStartTime(sTime);
 			readDataTable.setSort(sort);
 			readDataTableRunner = new Thread(readDataTable);
-            readDataTableRunner.start();            
+            readDataTableRunner.start();
     	}
     }
     
@@ -1013,6 +1013,10 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
     
     public void onGetReadSets(String[][] tableData) {
     	
+    	int[] id = new int[2];
+    	id[0] = Integer.parseInt(jTextFieldVID.getText());
+    	id[1] = Integer.parseInt(jTextFieldLID.getText());
+    	
 		setMessage("Refresh...", 500);
         dataTable.setVisible(false);
         dataTableModel.setRowCount(0);
@@ -1027,13 +1031,15 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			String[] rowData = {Integer.toString(i+1 ) + " ", st + " ", rd + " ", rt, lt, " " + sn};
 	        dataTableModel.addRow(rowData);
 		}
-    	    	
+
         dataTable.setVisible(true);
         
         //Tabellenanzeige in csv Datei schreiben
 		dataTableWriteToCsvThread = new DataTableWriteToCsvThread();
 		dataTableWriteToCsvThread.setFileContent(tableData);
 		dataTableWriteToCsvThread.setStartTime(sTime);
+		dataTableWriteToCsvThread.setFileName(jTextFieldFileName.getText());
+		dataTableWriteToCsvThread.setId(id);
 		dataTableWriteToCsvThreadRunner = new Thread(dataTableWriteToCsvThread);
 		dataTableWriteToCsvThreadRunner.start();
     }

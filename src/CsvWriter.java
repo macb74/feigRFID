@@ -6,9 +6,9 @@ public class CsvWriter {
 
 	private static FileWriter file;
 	
-	public static void write(String[] csvFileContent1) {
+	void write(String[] csvFileContent) {
 		
-		String csvOutput = csvFileContent1[0] + ";" + csvFileContent1[1] + ";" + csvFileContent1[2] + ";" + csvFileContent1[3].substring(0, 8) + ";" + csvFileContent1[4] + ";" + csvFileContent1[5] + ";" + csvFileContent1[6] + ";\n";
+		String csvOutput = csvFileContent[0] + ";" + csvFileContent[1] + ";" + csvFileContent[2] + ";" + csvFileContent[3] + ";" + csvFileContent[4] + ";" + csvFileContent[5] + ";" + csvFileContent[6] + ";\n";
 		
 		try {
                 file.append(csvOutput);
@@ -19,7 +19,7 @@ public class CsvWriter {
 
 	}
 
-	public static void openFile(String fileName) {
+	void openFile(String fileName) {
 	  	try {
 	  		file = new FileWriter(fileName, true);
 		} catch (IOException e) {
@@ -28,7 +28,7 @@ public class CsvWriter {
         }
 	}
 	
-	public static void closeFile() {
+	void closeFile() {
         try {
         	file.flush();
         	file.close();

@@ -107,7 +107,8 @@ public class BrmReadThread implements Runnable, FeIscListener {
 
                 String cTime = getComputerTime();
 				
-				CsvWriter.openFile(fileName);
+				CsvWriter csv = new CsvWriter();
+				csv.openFile("brm-result.csv");
 				
                 for (int i = 0; i < brmItems.length; i++) {
                 	if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_SNR)) {
@@ -174,13 +175,12 @@ public class BrmReadThread implements Runnable, FeIscListener {
 					csvFileContent[0] = Integer.toString(vID);
 					csvFileContent[1] = Integer.toString(lID);
 					csvFileContent[2] = Integer.toString(serialNumber[i]);
-					csvFileContent[3] = time[i];
+					csvFileContent[3] = time[i].substring(0, 8);
 					csvFileContent[4] = antNrDual;
 					csvFileContent[5] = uniqeNumber[i];
 					csvFileContent[6] = cTime;
 
-                    CsvWriter.write(csvFileContent);
-
+                    csv.write(csvFileContent);
                     LogWriter.write(serialNumberHex[i] + " - " + antNrDual + " - " + serialNumber[i] + "\n");
 
 					derbyInsertString += "('" + cTime + "', '" + time[i].substring(0, 8) + "', '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
@@ -193,7 +193,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
                 }
 
 
-                CsvWriter.closeFile();
+                csv.closeFile();
 	            
 				Connection derbyCn = Derby.derbyConnect();
                 statusDerby = Derby.derbyUpdate(derbyInsertString, derbyCn);		            
@@ -371,10 +371,6 @@ public class BrmReadThread implements Runnable, FeIscListener {
 		this.sleepTime = sleepTime;
 	}
 	
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
 	public void setId(int[] id) {
 		this.vID = id[0];
 		this.lID = id[1];
