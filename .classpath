@@ -3,9 +3,14 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.6.0_31"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.10-bin.jar"/>
-	<classpathentry kind="lib" path="lib/OBIDISC4J.jar"/>
+	<classpathentry kind="lib" path="lib/OBIDISC4J.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/usr/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib"/>
 	<classpathentry kind="lib" path="lib/derby.jar"/>
 	<classpathentry kind="lib" path="lib/appFramework-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/martin/git/feigRFID/lib/RXTXcomm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

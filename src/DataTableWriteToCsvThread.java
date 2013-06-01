@@ -67,7 +67,7 @@ public class DataTableWriteToCsvThread implements Runnable {
 			String zt = CalculateTime.calcTime(sTime, rt) + ".0";
 	
 			try {
-				outFile.append(st + ";" + zt + ";" + rd +"\n");
+				outFile.append(st + ";" + zt +"\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

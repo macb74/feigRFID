@@ -195,6 +195,15 @@ public class BrmReadThread implements Runnable, FeIscListener {
 
                 csv.closeFile();
 	            
+                //Senden der Daten an die serielle Schnittstelle
+    	    	if(ReadConfig.getConfig().getString("SERIAL_OUTPUT").equalsIgnoreCase("YES")) {
+    	    		LogWriter.write("Write to serial Port");
+	        		SerialSendThread sSendThread = new SerialSendThread();
+	                Thread runner = new Thread(sSendThread);
+	                sSendThread.setMessage(time, serialNumber);
+	                runner.start();
+    	    	}
+                
 				Connection derbyCn = Derby.derbyConnect();
                 statusDerby = Derby.derbyUpdate(derbyInsertString, derbyCn);		            
                 Derby.derbyDisconnect(derbyCn);
