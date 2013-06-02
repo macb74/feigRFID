@@ -17,14 +17,14 @@ public class ReadDataTableThread implements Runnable {
 	public void run() {
         
 		switch (sort) {
-			case 0: query = "SELECT distinct '0' as LAP, STARTNUMMER, TIME, SERIALNUMBER " +
-					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') order by TIME desc";
+			case 0: query = "SELECT distinct '0' as LAP, STARTNUMMER, TIME, ZEHNTEL, SERIALNUMBER " +
+					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') order by TIME desc, ZEHNTEL desc";
 					break;
-			case 1: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, SERIALNUMBER " +
-					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER order by TIME desc";
+			case 1: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, ZEHNTEL, SERIALNUMBER " +
+					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER, ZEHNTEL order by TIME desc, ZEHNTEL desc";
 					break;
-			case 2: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, SERIALNUMBER " +
-					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER order by LAP desc, TIME asc";
+			case 2: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, ZEHNTEL, SERIALNUMBER " +
+					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER, ZEHNTEL order by LAP desc, TIME asc, ZEHNTEL asc";
 					break;
 		}	
 
@@ -38,7 +38,7 @@ public class ReadDataTableThread implements Runnable {
 			e.printStackTrace();
 		}
 	
-		String[][] tableData = new String[rowCount][4];
+		String[][] tableData = new String[rowCount][5];
 		
 		try {
 			while (resultSet.next()) {
@@ -46,6 +46,7 @@ public class ReadDataTableThread implements Runnable {
 				tableData[i][1] = resultSet.getString("LAP");
 				tableData[i][2] = resultSet.getString("TIME");
 				tableData[i][3] = resultSet.getString("SERIALNUMBER");
+				tableData[i][4] = resultSet.getString("ZEHNTEL");				
 				i++;
 			}
 		} catch (SQLException e) {

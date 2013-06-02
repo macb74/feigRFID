@@ -76,7 +76,7 @@ public class Derby
 		ResultSet rs = dmd.getTables(null,"APP", "ZEIT",null);
 		if (!rs.next()) {
 			Statement stmt = cn.createStatement();
-		    stmt.executeUpdate("CREATE TABLE \"APP\".\"ZEIT\"(id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), ctime time, time time, serialnumber varchar(255), startnummer varchar(255) NOT NULL)");
+		    stmt.executeUpdate("CREATE TABLE \"APP\".\"ZEIT\"(id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), ctime time, time time, zehntel int, serialnumber varchar(255), startnummer varchar(255) NOT NULL)");
 		}
 		
 		return cn;

@@ -8,7 +8,7 @@ public class CsvWriter {
 	
 	void write(String[] csvFileContent) {
 		
-		String csvOutput = csvFileContent[0] + ";" + csvFileContent[1] + ";" + csvFileContent[2] + ";" + csvFileContent[3] + ";" + csvFileContent[4] + ";" + csvFileContent[5] + ";" + csvFileContent[6] + ";\n";
+		String csvOutput = csvFileContent[0] + ";" + csvFileContent[1] + ";" + csvFileContent[2] + ";" + csvFileContent[3].substring(0, 8) + ";" + csvFileContent[4] + ";" + csvFileContent[5] + ";" + csvFileContent[6] + ";\n";
 		
 		try {
                 file.append(csvOutput);

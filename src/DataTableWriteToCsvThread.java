@@ -62,12 +62,11 @@ public class DataTableWriteToCsvThread implements Runnable {
 	private void winlaufenResult(String[][] tableData) {
 		for (int i = 0; i < tableData.length; i++) {
 			String st = tableData[i][0];
-			String rd = tableData[i][1];
-			String rt = tableData[i][2];
-			String zt = CalculateTime.calcTime(sTime, rt) + ".0";
+			String rt = tableData[i][2] + "." + tableData[i][4];
+			//String zt = CalculateTime.calcTime(sTime, rt) + "." + tableData[i][4];
 	
 			try {
-				outFile.append(st + ";" + zt +"\n");
+				outFile.append(st + ";" + rt +"\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

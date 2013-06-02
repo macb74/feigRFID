@@ -182,12 +182,12 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        			dataTable.setDefaultRenderer(Object.class, new CustomCellRenderer());
 	        			dataTable.setDefaultRenderer(Number.class, new CustomCellRenderer()); 
 	        				        			
-	        			dataTable.getColumn("No").setPreferredWidth(10);
+	        			dataTable.getColumn("No").setPreferredWidth(5);
 	        			dataTable.getColumn("Stnr").setPreferredWidth(10);
-	        			dataTable.getColumn("Lap").setPreferredWidth(10);
-	        			dataTable.getColumn("Time").setPreferredWidth(40);
-	        			dataTable.getColumn("Finish Time").setPreferredWidth(40);
-	        			dataTable.getColumn("ID").setPreferredWidth(200);
+	        			dataTable.getColumn("Lap").setPreferredWidth(5);
+	        			dataTable.getColumn("Time").setPreferredWidth(50);
+	        			dataTable.getColumn("Finish Time").setPreferredWidth(50);
+	        			dataTable.getColumn("ID").setPreferredWidth(180);
 	        		    
 	        			jScrollPanelReadTable.setViewportView(dataTable);
 	        			dataTable.setFillsViewportHeight(true);
@@ -1026,9 +1026,10 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			String rd = tableData[i][1];
 			String rt = tableData[i][2];
 			String sn = tableData[i][3];
+			String zs = tableData[i][4];			
 			String lt = CalculateTime.calcTime(sTime, rt);
 
-			String[] rowData = {Integer.toString(i+1 ) + " ", st + " ", rd + " ", rt, lt, " " + sn};
+			String[] rowData = {Integer.toString(i+1 ) + " ", st + " ", rd + " ", rt + "." + zs, lt + "." + zs, " " + sn};
 	        dataTableModel.addRow(rowData);
 		}
 

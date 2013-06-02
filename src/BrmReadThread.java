@@ -65,7 +65,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
 
 	private void readBuffer(FedmIscReader fedm, int sets, boolean db) {
         
-		String derbyInsertString = "insert into APP.ZEIT (CTIME, TIME, SERIALNUMBER, STARTNUMMER) VALUES ";
+		String derbyInsertString = "insert into APP.ZEIT (CTIME, TIME, ZEHNTEL, SERIALNUMBER, STARTNUMMER) VALUES ";
 		String mySqlInsertString = "insert into zeit (vID, lID, nummer, zeit, reader) values ";
 		
 		if (fedm == null) {
@@ -175,15 +175,15 @@ public class BrmReadThread implements Runnable, FeIscListener {
 					csvFileContent[0] = Integer.toString(vID);
 					csvFileContent[1] = Integer.toString(lID);
 					csvFileContent[2] = Integer.toString(serialNumber[i]);
-					csvFileContent[3] = time[i].substring(0, 8);
+					csvFileContent[3] = time[i];
 					csvFileContent[4] = antNrDual;
 					csvFileContent[5] = uniqeNumber[i];
 					csvFileContent[6] = cTime;
 
                     csv.write(csvFileContent);
                     LogWriter.write(serialNumberHex[i] + " - " + antNrDual + " - " + serialNumber[i] + "\n");
-
-					derbyInsertString += "('" + cTime + "', '" + time[i].substring(0, 8) + "', '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
+                    
+					derbyInsertString += "('" + cTime + "', '" + time[i].substring(0, 8) + "', " + time[i].substring(9, 10) + ", '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
 					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + time[i] +"', '" + host + "')";
  
 					if(i < brmItems.length - 1) {
@@ -197,13 +197,13 @@ public class BrmReadThread implements Runnable, FeIscListener {
 	            
                 //Senden der Daten an die serielle Schnittstelle
     	    	if(ReadConfig.getConfig().getString("SERIAL_OUTPUT").equalsIgnoreCase("YES")) {
-    	    		LogWriter.write("Write to serial Port");
+    	    		LogWriter.write("Write to serial Port\n");
 	        		SerialSendThread sSendThread = new SerialSendThread();
 	                Thread runner = new Thread(sSendThread);
 	                sSendThread.setMessage(time, serialNumber);
 	                runner.start();
     	    	}
-                
+    	    	
 				Connection derbyCn = Derby.derbyConnect();
                 statusDerby = Derby.derbyUpdate(derbyInsertString, derbyCn);		            
                 Derby.derbyDisconnect(derbyCn);

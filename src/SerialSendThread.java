@@ -60,18 +60,18 @@ public class SerialSendThread implements Runnable {
 			}
 		}
 		if (foundPort != true) {
-			LogWriter.write("Serialport nicht gefunden: " + portName);
+			LogWriter.write("Serialport nicht gefunden: " + portName + "\n");
 			return false;
 		}
 		try {
 			serialPort = (SerialPort) serialPortId.open("Öffnen und Senden", 500);
 		} catch (PortInUseException e) {
-			LogWriter.write("Port belegt");
+			LogWriter.write("Port belegt\n");
 		}
 		try {
 			outputStream = serialPort.getOutputStream();
 		} catch (IOException e) {
-			LogWriter.write("Keinen Zugriff auf OutputStream");
+			LogWriter.write("Keinen Zugriff auf OutputStream\n");
 		}
 /*
 		try {
@@ -89,7 +89,7 @@ public class SerialSendThread implements Runnable {
 		try {
 			serialPort.setSerialPortParams(baudrate, dataBits, stopBits, parity);
 		} catch(UnsupportedCommOperationException e) {
-			LogWriter.write("Konnte Schnittstellen-Paramter nicht setzen");
+			LogWriter.write("Konnte Schnittstellen-Paramter nicht setzen\n");
 		}
 		
 		serialPortGeoeffnet = true;
@@ -103,7 +103,7 @@ public class SerialSendThread implements Runnable {
 			serialPort.close();
 			serialPortGeoeffnet = false;
 		} else {
-			LogWriter.write("Serialport bereits geschlossen");
+			LogWriter.write("Serialport bereits geschlossen\n");
 		}
 	}
 	
@@ -115,7 +115,7 @@ public class SerialSendThread implements Runnable {
 		try {
 			outputStream.write(nachricht.getBytes());
 		} catch (IOException e) {
-			LogWriter.write("Fehler beim Senden");
+			LogWriter.write("Fehler beim Senden\n");
 		}
 	}
 
