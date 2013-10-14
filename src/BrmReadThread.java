@@ -66,7 +66,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
 	private void readBuffer(FedmIscReader fedm, int sets, boolean db) {
         
 		String derbyInsertString = "insert into APP.ZEIT (CTIME, TIME, ZEHNTEL, SERIALNUMBER, STARTNUMMER) VALUES ";
-		String mySqlInsertString = "insert into zeit (vID, lID, nummer, zeit, reader) values ";
+		String mySqlInsertString = "insert into zeit (vID, lID, nummer, zeit, millisecond, reader) values ";
 		
 		if (fedm == null) {
             return;
@@ -184,7 +184,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
                     LogWriter.write(serialNumberHex[i] + " - " + antNrDual + " - " + serialNumber[i] + "\n");
                     
 					derbyInsertString += "('" + cTime + "', '" + time[i].substring(0, 8) + "', " + time[i].substring(9, 10) + ", '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
-					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + time[i] +"', '" + host + "')";
+					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + time[i] +"', " + time[i].substring(9, 12) + ", '" + host + "')";
  
 					if(i < brmItems.length - 1) {
 						derbyInsertString += ",\n";

@@ -6,8 +6,8 @@ public class MySQL
   public static boolean mySqlInsert( String string, Connection cn ) throws SQLException
     {
      try {
-         Statement  st = cn.createStatement();
          //System.out.println( string );
+    	 Statement  st = cn.createStatement();
          st.executeUpdate( string );
 
 /*         
