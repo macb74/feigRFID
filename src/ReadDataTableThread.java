@@ -20,14 +20,14 @@ public class ReadDataTableThread implements Runnable {
 			case 0: query = "SELECT distinct '0' as LAP, STARTNUMMER, TIME, ZEHNTEL, SERIALNUMBER " +
 					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') order by TIME desc, ZEHNTEL desc";
 					break;
-			case 1: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, ZEHNTEL, SERIALNUMBER " +
-					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER, ZEHNTEL order by TIME desc, ZEHNTEL desc";
+			case 1: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, 0 as ZEHNTEL, SERIALNUMBER " +
+					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER order by TIME desc";
 					break;
-			case 2: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, ZEHNTEL, SERIALNUMBER " +
-					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER, ZEHNTEL order by LAP desc, TIME asc, ZEHNTEL asc";
+			case 2: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, 0 as ZEHNTEL, SERIALNUMBER " +
+					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER order by LAP desc, TIME asc";
 					break;
-		}	
-
+		}
+		
 		Connection derbyCn = Derby.derbyConnect();
 
 		try {
@@ -46,7 +46,7 @@ public class ReadDataTableThread implements Runnable {
 				tableData[i][1] = resultSet.getString("LAP");
 				tableData[i][2] = resultSet.getString("TIME");
 				tableData[i][3] = resultSet.getString("SERIALNUMBER");
-				tableData[i][4] = resultSet.getString("ZEHNTEL");				
+				tableData[i][4] = resultSet.getString("ZEHNTEL");
 				i++;
 			}
 		} catch (SQLException e) {

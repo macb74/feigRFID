@@ -13,6 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ComboBoxModel;
@@ -146,10 +147,12 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	
 	public FeigRfid() {
 		super();
-		initGUI();
-		
-		sTime = "00:00:00";
+
+		sDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		sTime = sDate + " 00:00:00";
 		sort = 0;
+
+		initGUI();
 		UhrzeitThread uz = new UhrzeitThread();
 		uz.start();
 		onGetReaderSets(true);
@@ -328,7 +331,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        		jPanelReadFields.setPreferredSize(new java.awt.Dimension(360, 240));
 	        		{
 	        			jButtonSetPower = new JButton();
-	        			jPanelReadFields.add(jButtonSetPower, new GridBagConstraints(4, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+	        			jPanelReadFields.add(jButtonSetPower, new GridBagConstraints(5, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 	        			jButtonSetPower.setText("set");
 	        			jButtonSetPower.setName("jButtonSetPower");
 	        			jButtonSetPower.setPreferredSize(new java.awt.Dimension(69, 22));
@@ -348,7 +351,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        		}
 	        		{
 	        			jButtonSetValTime = new JButton();
-	        			jPanelReadFields.add(jButtonSetValTime, new GridBagConstraints(4, 4, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+	        			jPanelReadFields.add(jButtonSetValTime, new GridBagConstraints(5, 4, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 	        			jButtonSetValTime.setText("set");
 	        			jButtonSetValTime.setName("jButtonSetValTime");
 	        			jButtonSetValTime.setPreferredSize(new java.awt.Dimension(69, 22));
@@ -424,8 +427,8 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        		{
 	        			jTextFieldStartTime = new JTextField();
 	        			jPanelReadFields.add(jTextFieldStartTime, new GridBagConstraints(1, 5, 0, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-	        			jTextFieldStartTime.setText("00:00:00");
-	        			jTextFieldStartTime.setPreferredSize(new java.awt.Dimension(70, 19));
+	        			jTextFieldStartTime.setText(sTime);
+	        			jTextFieldStartTime.setPreferredSize(new java.awt.Dimension(130, 19));
 	        			jTextFieldStartTime.setName("jTextFieldStartTime");
 	        		}
 	        		{
@@ -497,7 +500,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        		}
 	        		{
 	        			jButtonSetStartTime = new JButton();
-	        			jPanelReadFields.add(jButtonSetStartTime, new GridBagConstraints(4, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+	        			jPanelReadFields.add(jButtonSetStartTime, new GridBagConstraints(5, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 	        			jButtonSetStartTime.setName("jButtonSetStartTime");
 	        			jButtonSetStartTime.setText("set");
 	        			jButtonSetStartTime.setPreferredSize(new java.awt.Dimension(69, 22));
@@ -831,9 +834,9 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	}
 
 	private void jButtonSetStartTimeActionPerformed(ActionEvent evt) {
-		if((sTime.equals("00:00:00") && (jTextFieldStartTime.getText().equals("00:00:00")))|| jTextFieldStartTime.getText().equals("")) {
-			String now = new SimpleDateFormat("HH:mm:ss").format(new Date());
-			sTime = now;
+		if((sTime.equals(sDate + " 00:00:00") && (jTextFieldStartTime.getText().equals(sDate + " 00:00:00")))|| jTextFieldStartTime.getText().equals("")) {
+			String nowTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
+			sTime = sDate + " " + nowTime;
 			jTextFieldStartTime.setText(sTime);
 		} else {
 			sTime = jTextFieldStartTime.getText();
@@ -986,6 +989,11 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 		jTextFieldLID.setText(ReadConfig.getConfig().getString("lID"));
 	}
 	
+	public void getDate() {
+
+
+	}
+	
     public void onGetReaderSets(boolean b) {
     	if(b) {
 			readDataTable = new ReadDataTableThread();
@@ -1027,9 +1035,11 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			String rt = tableData[i][2];
 			String sn = tableData[i][3];
 			String zs = tableData[i][4];			
-			String lt = CalculateTime.calcTime(sTime, rt);
+			String lt;
+			lt = CalculateTime.calcTime(sTime, rt);
 
-			String[] rowData = {Integer.toString(i+1 ) + " ", st + " ", rd + " ", rt + "." + zs, lt + "." + zs, " " + sn};
+
+			String[] rowData = {Integer.toString(i+1 ) + " ", st + " ", rd + " ", rt.substring(11), lt + "." + zs, " " + sn};
 	        dataTableModel.addRow(rowData);
 		}
 
@@ -1079,7 +1089,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 		public void run(){
 			while(true){
 				try{Thread.sleep(1000);}catch(Exception e){ e.printStackTrace(); }
-				String now = new SimpleDateFormat("HH:mm:ss").format(new Date());				
+				String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());				
 				laufZeit = CalculateTime.calcTime(sTime, now);
 				jLabelZeit.setText(laufZeit);
 		    }
@@ -1099,6 +1109,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
     private static String mode;
     private int intStNr;
     private String sTime;
+    private String sDate;
     private int sort;
 
 }

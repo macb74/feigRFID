@@ -101,6 +101,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
             	int[] serialNumber    	 = new int[brmItems.length];
             	String[] uniqeNumber     = new String[brmItems.length];
                 String[] data            = new String[brmItems.length];
+                String[] date            = new String[brmItems.length];
                 String[] time            = new String[brmItems.length];
                 String[] type            = new String[brmItems.length];
                 String[] antNr           = new String[brmItems.length];
@@ -141,7 +142,11 @@ public class BrmReadThread implements Runnable, FeIscListener {
                     }
                                         
 					if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_TIMER)) { // Timer
-                        String hour = Integer.toString(brmItems[i].getReaderTime().getHour());
+                        String year  = Integer.toString(brmItems[i].getReaderTime().getYear());
+                        String month = Integer.toString(brmItems[i].getReaderTime().getMonth());
+                        String day   = Integer.toString(brmItems[i].getReaderTime().getDay());
+                        
+						String hour = Integer.toString(brmItems[i].getReaderTime().getHour());
                         if (hour.length() == 1) {
                             hour = "0" + hour;
                         }
@@ -160,6 +165,9 @@ public class BrmReadThread implements Runnable, FeIscListener {
                         if (millisecond.length() == 2) {
                             millisecond = "0" + millisecond;
                         }
+                        
+                        date[i] = year + "-" + month + "-" + day;
+                        
                         time[i] = hour
                                  + ":"
                                  + minute
@@ -183,8 +191,8 @@ public class BrmReadThread implements Runnable, FeIscListener {
                     csv.write(csvFileContent);
                     LogWriter.write(serialNumberHex[i] + " - " + antNrDual + " - " + serialNumber[i] + "\n");
                     
-					derbyInsertString += "('" + cTime + "', '" + time[i].substring(0, 8) + "', " + time[i].substring(9, 10) + ", '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
-					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + time[i] +"', " + time[i].substring(9, 12) + ", '" + host + "')";
+					derbyInsertString += "('" + cTime + "', '" + date[i] + " " + time[i].substring(0, 10) + "', " + time[i].substring(9, 10) + ", '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
+					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + date[i] + " " + time[i] +"', " + time[i].substring(9, 12) + ", '" + host + "')";
  
 					if(i < brmItems.length - 1) {
 						derbyInsertString += ",\n";
