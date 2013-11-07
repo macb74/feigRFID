@@ -13,7 +13,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ComboBoxModel;
@@ -988,12 +987,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 		jTextFieldVID.setText(ReadConfig.getConfig().getString("vID"));
 		jTextFieldLID.setText(ReadConfig.getConfig().getString("lID"));
 	}
-	
-	public void getDate() {
-
-
-	}
-	
+		
     public void onGetReaderSets(boolean b) {
     	if(b) {
 			readDataTable = new ReadDataTableThread();
