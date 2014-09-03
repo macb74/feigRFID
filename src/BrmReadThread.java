@@ -4,11 +4,21 @@
  * Created on 1. Juli 2003, 11:45
  */
 
-import java.sql.Connection;
-import java.util.Date;
 import java.io.FileWriter;
 import java.io.IOException;
-import de.feig.*;
+import java.sql.Connection;
+import java.util.Date;
+
+import de.feig.FeHexConvert;
+import de.feig.FeIscListener;
+import de.feig.FePortDriverException;
+import de.feig.FeReaderDriverException;
+import de.feig.FedmBrmTableItem;
+import de.feig.FedmException;
+import de.feig.FedmIscReader;
+import de.feig.FedmIscReaderConst;
+import de.feig.FedmIscReaderID;
+import de.feig.FedmIscReaderInfo;
 
 /**
  *

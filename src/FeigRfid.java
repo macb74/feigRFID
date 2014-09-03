@@ -1,13 +1,9 @@
-import com.cloudgarden.layout.AnchorConstraint;
-import com.cloudgarden.layout.AnchorLayout;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -15,9 +11,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,11 +25,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.application.Application;
+
+import com.cloudgarden.layout.AnchorConstraint;
+import com.cloudgarden.layout.AnchorLayout;
 
 
 /**
@@ -154,6 +153,9 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 		initGUI();
 		UhrzeitThread uz = new UhrzeitThread();
 		uz.start();
+		
+		// eine halbe Sekunde warten, bis das GUI fertig aufgebaut ist
+		try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
 		onGetReaderSets(true);
 	}
 

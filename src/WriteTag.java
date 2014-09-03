@@ -1,5 +1,3 @@
-import java.util.Date;
-
 import de.feig.FeIscListener;
 import de.feig.FePortDriverException;
 import de.feig.FeReaderDriverException;

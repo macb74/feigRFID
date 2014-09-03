@@ -1,4 +1,8 @@
-import de.feig.*;
+import de.feig.FePortDriverException;
+import de.feig.FeReaderDriverException;
+import de.feig.FedmException;
+import de.feig.FedmIscReader;
+import de.feig.FedmIscReaderID;
 
 
 public class Info {
