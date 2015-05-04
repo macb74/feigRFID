@@ -29,14 +29,19 @@ public class DataTableWriteToCsvThread implements Runnable {
 			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equals("winlaufen")) {
 				csvFormat = 2;
 			}
+			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equalsIgnoreCase("StartuLaufzeit")) {
+				csvFormat = 3;
+			}
 		}
-				
+		
 		switch (csvFormat) {
 		case 0: lapCountResult(tableData);
 		        break;
 		case 1: openTimingResult(tableData);
         		break;
 		case 2: winlaufenResult(tableData);
+				break;
+		case 3: startulaufzeitResult(tableData);
 				break;
 		}
 				
@@ -74,7 +79,6 @@ public class DataTableWriteToCsvThread implements Runnable {
 		}
 	}
 
-
 	private void openTimingResult(String[][] tableData) {
 		for (int i = 0; i < tableData.length; i++) {
 			String st = tableData[i][0];
@@ -93,7 +97,20 @@ public class DataTableWriteToCsvThread implements Runnable {
 	}
 	
 
+	private void startulaufzeitResult(String[][] tableData) {
+		for (int i = 0; i < tableData.length; i++) {
+			String st = tableData[i][0];
+			String rt = tableData[i][2];
+			String zt = CalculateTime.calcTime(sTime, rt) + "." + tableData[i][4];
 	
+			try {
+				outFile.append(st + ";" + zt +"\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	
 	public void openFile(String filename) {

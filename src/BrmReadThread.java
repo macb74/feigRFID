@@ -58,7 +58,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
 
 	                // Sleep, damit die connection Anzeige sichtbar wird.
 	                Thread.sleep(100);
-                	feigGuiListener.onReaderConnect(false);	                
+                	feigGuiListener.onReaderConnect(false);
                 } else {
 	            	feigGuiListener.setMessage("Can not connect", 2000);
                 }
