@@ -4,8 +4,7 @@
  * Created on 1. Juli 2003, 11:45
  */
 
-import java.io.FileWriter;
-import java.io.IOException;
+//import java.io.FileWriter;
 import java.sql.Connection;
 import java.util.Date;
 
@@ -202,7 +201,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
                     LogWriter.write(serialNumberHex[i] + " - " + antNrDual + " - " + serialNumber[i] + "\n");
                     
 					derbyInsertString += "('" + cTime + "', '" + date[i] + " " + time[i].substring(0, 10) + "', " + time[i].substring(9, 10) + ", '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
-					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + date[i] + " " + time[i] +"', " + time[i].substring(9, 12) + ", '" + host + "')";
+					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + date[i] + " " + time[i].substring(0, 8) +"', " + time[i].substring(9, 12) + ", '" + host + "')";
  
 					if(i < brmItems.length - 1) {
 						derbyInsertString += ",\n";
@@ -222,16 +221,24 @@ public class BrmReadThread implements Runnable, FeIscListener {
 	                runner.start();
     	    	}
     	    	
-				Connection derbyCn = Derby.derbyConnect();
-                statusDerby = Derby.derbyUpdate(derbyInsertString, derbyCn);		            
-                Derby.derbyDisconnect(derbyCn);
+    	    	/*
+    	    	 * im Headless mode wird keine derby DB benoetigt
+    	    	 */
+    	    	if( derby ) {
+					Connection derbyCn = Derby.derbyConnect();
+	                statusDerby = Derby.derbyUpdate(derbyInsertString, derbyCn);		            
+	                Derby.derbyDisconnect(derbyCn);
+
+	                // wenn neue Datensätze in der DerbyDB.
+					if(statusDerby) {
+						feigGuiListener.onGetReaderSets(true);
+					}
+    	    	} else {
+    	    		statusDerby = true;
+    	    	}
+                
 				
-				// wenn neue Datensätze in der DerbyDB.
-				if(statusDerby) {
-					feigGuiListener.onGetReaderSets(true);
-				}
-				
-				if( db == true ) {
+				if( db ) {
 					Connection cn = MySQL.mySqlConnect();
 					statusMySql = MySQL.mySqlInsert(mySqlInsertString, cn);
 		            MySQL.mySqlDisconnect(cn);
@@ -256,25 +263,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
 		return sdf.format(now);
 	}
-    
-	public void openCsv() {
-	  	try {
-	  		csvFile = new FileWriter(fileName, true);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-        }
-	}
-	
-	public void closeCsv() {
-        try {
-        	csvFile.flush();
-			csvFile.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-	}
+
 
 	private String getDualValue(String antNr) {
 		int r; // Rest r
@@ -403,9 +392,12 @@ public class BrmReadThread implements Runnable, FeIscListener {
 		this.lID = id[1];
 	}
 	
+	public void setUseDerby(boolean b) {
+		this.derby = b;
+	}
+	
 	private int lID;
 	private int vID;
-	private String fileName;
 	private int sleepTime;
 	private String host;
     private boolean clear;
@@ -415,7 +407,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
 	private boolean db;
 	private boolean statusMySql;
 	private boolean statusDerby;
-	public FileWriter csvFile;
     private FeigGuiListener feigGuiListener;
+	private boolean derby = true;
 
 }

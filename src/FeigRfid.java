@@ -131,16 +131,20 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
             System.gc();
         }
 
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				FeigRfid inst = new FeigRfid();
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-				setConfigValues();
-				mode = "read";
-				showReadFields(mode);
-			}
-		});
+        if(!ReadConfig.getConfig().getBoolean("HEADLESS")) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					FeigRfid inst = new FeigRfid();
+					inst.setLocationRelativeTo(null);
+					inst.setVisible(true);
+					setConfigValues();
+					mode = "read";
+					showReadFields(mode);
+				}
+			});
+        } else {
+        	new FeigRfidHeadless(fedm);
+        }
 	}
 	
 	public FeigRfid() {
