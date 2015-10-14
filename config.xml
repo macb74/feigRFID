@@ -25,4 +25,5 @@
 <entry key="SERIAL_OUTPUT_PORT">/tmp/vboxcom1</entry>
 <entry key="LOG">1</entry>
 <entry key="USE_MEMORY_DB">0</entry>
+<entry key="HEADLESS">false</entry>
 </properties>
