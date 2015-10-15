@@ -53,7 +53,8 @@ public class Info {
 			
 			SetTime setTime = new SetTime();
 			setTime.setFedmIscReader(fedm);
-			String readerTime = setTime.getReaderTime();
+			//String readerTime = setTime.getReaderTime();
+			String readerTime = setTime.getReaderDateTime().substring(0, 19);
 			intVTime = intVTime/10;
 			int rf = (intRf - 15) * 100;
 			

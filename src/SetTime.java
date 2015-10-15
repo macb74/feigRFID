@@ -70,9 +70,9 @@ public class SetTime {
 			e.printStackTrace();
 		} 
 		
-		String nrTime = getReaderTime();
+		String nrTime = getReaderDateTime();
 //		System.out.println("new Reader Time: " + nrTime);
-		returnString = "New Reader Time: " + nrTime.substring(0, 8);
+		returnString = "New Reader Time: " + nrTime.substring(0, 19);
 		
 		return returnString;
 
@@ -91,13 +91,52 @@ public class SetTime {
 		}
 		
 		int stunde = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_HOUR);
-		int minute = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MINUTE);
-		int sekunde = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MILLISECOND);
+		String minute = Integer.toString(fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MINUTE));
+		String sekunde = Integer.toString(fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MILLISECOND));
+		
+		while(minute.length() < 2) {
+			minute = "0" + minute;
+		}
+		
+		while(sekunde.length() < 5) {
+			sekunde = "0" + sekunde;
+		}
 		
 		String time = stunde + ":" + minute + ":" + sekunde;
 		return(time);
 	}
 
+	public String getReaderDateTime() {
+		try
+		{
+			fedm.sendProtocol((byte)0x88);
+		} catch (FePortDriverException e) {
+			e.printStackTrace();
+		} catch (FeReaderDriverException e) {
+			e.printStackTrace();
+		} catch (FedmException e) {
+			e.printStackTrace();
+		}
+		
+		int century = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_CENTURY);
+		int year = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_YEAR);
+		int month = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MONTH);
+		int day = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_DAY);
+		int stunde = fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_HOUR);
+		String minute = Integer.toString(fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MINUTE));
+		String sekunde = Integer.toString(fedm.getIntegerData(FedmIscReaderID.FEDM_ISC_TMP_DATE_MILLISECOND));
+		
+		while(minute.length() < 2) {
+			minute = "0" + minute;
+		}
+		
+		while(sekunde.length() < 5) {
+			sekunde = "0" + sekunde;
+		}
+		
+		String dateTime = century + "" + year + "-" + month + "-" + day + " " + stunde + ":" + minute + ":" + sekunde;
+		return(dateTime);
+	}
 	
 	public String getComputerDate() {
 		Date now = new java.util.Date();
