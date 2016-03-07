@@ -82,7 +82,16 @@ public class Derby
 		
 		if (!rs.next()) {
 			Statement stmt = cn.createStatement();
-		    stmt.executeUpdate("CREATE TABLE \"APP\".\"ZEIT\"(id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), ctime TIME, time TIMESTAMP, zehntel INT, serialnumber VARCHAR(255), startnummer VARCHAR(255) NOT NULL)");
+		    
+			stmt.executeUpdate("CREATE TABLE \"APP\".\"ZEIT\"("
+			   		+ "id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
+		    		+ "ctime TIME, "
+		    		+ "time TIMESTAMP, "
+		    		+ "zehntel INT, "
+		    		+ "serialnumber VARCHAR(255), "
+		    		+ "startnummer VARCHAR(255) NOT NULL, "
+		    		+ "ant VARCHAR(4), "
+		    		+ "rssi INT)");
 		}
 		
 		return cn;

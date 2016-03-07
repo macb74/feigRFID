@@ -181,7 +181,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        		jPanelReadTabel.add(jScrollPanelReadTable, new AnchorConstraint(29, 1000, 1000, 28, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 	        		jScrollPanelReadTable.setPreferredSize(new java.awt.Dimension(533, 486));
 	        		{
-	        			String[] columnNames = {"No", "Stnr", "Lap", "Time", "Finish Time", "ID"};
+	        			String[] columnNames = {"No", "Stnr", "Lap", "Time", "Finish Time", "ID", "ANT", "RSSI"};
 	        			
 	        			dataTableModel = new DefaultTableModel(null, columnNames);
 	        			dataTable = new JTable();
@@ -191,12 +191,14 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        			dataTable.setDefaultRenderer(Number.class, new CustomCellRenderer()); 
 	        				        			
 	        			dataTable.getColumn("No").setPreferredWidth(5);
-	        			dataTable.getColumn("Stnr").setPreferredWidth(10);
+	        			dataTable.getColumn("Stnr").setPreferredWidth(15);
 	        			dataTable.getColumn("Lap").setPreferredWidth(5);
-	        			dataTable.getColumn("Time").setPreferredWidth(50);
-	        			dataTable.getColumn("Finish Time").setPreferredWidth(50);
-	        			dataTable.getColumn("ID").setPreferredWidth(180);
-	        		    
+	        			dataTable.getColumn("Time").setPreferredWidth(70);
+	        			dataTable.getColumn("Finish Time").setPreferredWidth(70);
+	        			dataTable.getColumn("ID").setPreferredWidth(100);
+	        			dataTable.getColumn("ANT").setPreferredWidth(10);
+	        			dataTable.getColumn("RSSI").setPreferredWidth(20);
+	        			
 	        			jScrollPanelReadTable.setViewportView(dataTable);
 	        			dataTable.setFillsViewportHeight(true);
 	        			dataTable.setName("dataTable");
@@ -1034,12 +1036,14 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			String rd = tableData[i][1];
 			String rt = tableData[i][2];
 			String sn = tableData[i][3];
-			String zs = tableData[i][4];			
+			String zs = tableData[i][4];
+			String ant = tableData[i][5];
+			String rssi = tableData[i][6];
 			String lt;
 			lt = CalculateTime.calcTime(sTime, rt);
 
 
-			String[] rowData = {Integer.toString(i+1 ) + " ", st + " ", rd + " ", rt.substring(11), lt + "." + zs, " " + sn};
+			String[] rowData = {Integer.toString(i+1 ) + " ", st + " ", rd + " ", rt.substring(11), lt + "." + zs, " " + sn, ant, rssi};
 	        dataTableModel.addRow(rowData);
 		}
 

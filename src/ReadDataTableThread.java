@@ -17,13 +17,13 @@ public class ReadDataTableThread implements Runnable {
 	public void run() {
         
 		switch (sort) {
-			case 0: query = "SELECT distinct '0' as LAP, STARTNUMMER, TIME, ZEHNTEL, SERIALNUMBER " +
+			case 0: query = "SELECT distinct '0' as LAP, STARTNUMMER, TIME, ZEHNTEL, SERIALNUMBER, ANT, RSSI " +
 					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') order by TIME desc, ZEHNTEL desc";
 					break;
-			case 1: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, 0 as ZEHNTEL, SERIALNUMBER " +
+			case 1: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, 0 as ZEHNTEL, SERIALNUMBER, 0 as ANT, 0 as RSSI " +
 					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER order by TIME desc";
 					break;
-			case 2: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, 0 as ZEHNTEL, SERIALNUMBER " +
+			case 2: query = "SELECT distinct count(STARTNUMMER) as LAP, STARTNUMMER, max(TIME) as TIME, 0 as ZEHNTEL, SERIALNUMBER, 0 as ANT, 0 as RSSI " +
 					"from ZEIT WHERE ID in (SELECT ID from ZEIT where time > '" + sTime + "') group by STARTNUMMER, SERIALNUMBER order by LAP desc, TIME asc";
 					break;
 		}
@@ -38,7 +38,7 @@ public class ReadDataTableThread implements Runnable {
 			e.printStackTrace();
 		}
 	
-		String[][] tableData = new String[rowCount][5];
+		String[][] tableData = new String[rowCount][7];
 		
 		try {
 			while (resultSet.next()) {
@@ -47,6 +47,8 @@ public class ReadDataTableThread implements Runnable {
 				tableData[i][2] = resultSet.getString("TIME");
 				tableData[i][3] = resultSet.getString("SERIALNUMBER");
 				tableData[i][4] = resultSet.getString("ZEHNTEL");
+				tableData[i][5] = resultSet.getString("ANT");
+				tableData[i][6] = resultSet.getString("RSSI");
 				i++;
 			}
 		} catch (SQLException e) {

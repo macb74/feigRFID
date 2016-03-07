@@ -41,6 +41,10 @@ class CustomCellRenderer implements TableCellRenderer {
 	                    break;
 	            case 4: ((JLabel) renderer).setHorizontalAlignment(JLabel.CENTER);
 	            		break;
+	            case 6: ((JLabel) renderer).setHorizontalAlignment(JLabel.CENTER);
+        				break;
+	            case 7: ((JLabel) renderer).setHorizontalAlignment(JLabel.CENTER);
+        				break;
 	            default:((JLabel) renderer).setHorizontalAlignment(JLabel.LEFT);
 	                    break;
             }

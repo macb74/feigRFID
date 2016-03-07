@@ -7,6 +7,7 @@
 //import java.io.FileWriter;
 import java.sql.Connection;
 import java.util.Date;
+import java.util.HashMap;
 
 import de.feig.FeHexConvert;
 import de.feig.FeIscListener;
@@ -18,6 +19,7 @@ import de.feig.FedmIscReader;
 import de.feig.FedmIscReaderConst;
 import de.feig.FedmIscReaderID;
 import de.feig.FedmIscReaderInfo;
+import de.feig.FedmIscRssiItem;
 
 /**
  *
@@ -74,8 +76,8 @@ public class BrmReadThread implements Runnable, FeIscListener {
 
 	private void readBuffer(FedmIscReader fedm, int sets, boolean db) {
         
-		String derbyInsertString = "insert into APP.ZEIT (CTIME, TIME, ZEHNTEL, SERIALNUMBER, STARTNUMMER) VALUES ";
-		String mySqlInsertString = "insert into zeit (vID, lID, nummer, zeit, millisecond, reader) values ";
+		String derbyInsertString = "insert into APP.ZEIT (CTIME, TIME, ZEHNTEL, SERIALNUMBER, STARTNUMMER, ANT, RSSI) VALUES ";
+		String mySqlInsertString = "insert into zeit (vID, lID, nummer, zeit, millisecond, reader, ant, rssi) values ";
 		
 		if (fedm == null) {
             return;
@@ -104,7 +106,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
                 brmItems = (FedmBrmTableItem[])fedm.getTable(FedmIscReaderConst.BRM_TABLE);
             
             if (brmItems != null) {
-                
+                            	
             	String[] serialNumberHex = new String[brmItems.length];
             	//String[] serialNumber    = new String[brmItems.length];
             	int[] serialNumber    	 = new int[brmItems.length];
@@ -114,6 +116,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
                 String[] time            = new String[brmItems.length];
                 String[] type            = new String[brmItems.length];
                 String[] antNr           = new String[brmItems.length];
+                String[] rssi            = new String[brmItems.length];
 
                 String cTime = getComputerTime();
 				
@@ -121,17 +124,22 @@ public class BrmReadThread implements Runnable, FeIscListener {
 				csv.openFile("brm-result.csv");
 				
                 for (int i = 0; i < brmItems.length; i++) {
+                	
                 	if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_SNR)) {
                         serialNumberHex[i] = brmItems[i].getStringData(FedmIscReaderConst.DATA_SNR);
 
                         // zu kurze Seriennummern werden abgefangen
-                        while (serialNumberHex[i].length() != 24) {
+                        while (serialNumberHex[i].length() < 8) {
             				serialNumberHex[i] = "0" + serialNumberHex[i];
             			}
+                        
+                        if (serialNumberHex[i].length() > 8) {
+                        	serialNumberHex[i] = serialNumberHex[i].substring(0, 8);
+                        }
 
                         //serialNumber[i] = serialNumberHex[i].substring(serialNumberHex[i].length()-4, serialNumberHex[i].length());
                         serialNumber[i] = Integer.parseInt(serialNumberHex[i].substring(serialNumberHex[i].length()-4, serialNumberHex[i].length()),16);
-                        uniqeNumber[i] = serialNumberHex[i].substring(serialNumberHex[i].length()-18, serialNumberHex[i].length() -4);
+                        uniqeNumber[i] = serialNumberHex[i].substring(0, serialNumberHex[i].length() -4);
                         
                 	}
                     
@@ -140,15 +148,14 @@ public class BrmReadThread implements Runnable, FeIscListener {
                         data[i] = FeHexConvert.byteArrayToHexString(b);
                         System.out.println("DATA_RxDB: " + FeHexConvert.byteArrayToHexString(b));
                     }
-                    
-                    if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_ANT_NR)) { // ant nr
-                        antNr[i] = brmItems[i].getStringData(FedmIscReaderConst.DATA_ANT_NR);
-                    }
-                     
+                                         
                     if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_TRTYPE)) { // tranponder type
                         type[i] = brmItems[i].getStringData(FedmIscReaderConst.DATA_TRTYPE);
                         //System.out.println("DATA_TRTYPE: "+ brmItems[i].getStringData(FedmIscReaderConst.DATA_TRTYPE));
                     }
+                    
+					rssi[i] = getAntData(brmItems[i], "RSSI");
+                    antNr[i] = getAntData(brmItems[i], "NR");
                                         
 					if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_TIMER)) { // Timer
                         String year  = Integer.toString(brmItems[i].getReaderTime().getYear());
@@ -185,23 +192,35 @@ public class BrmReadThread implements Runnable, FeIscListener {
                                  + "."
                                  + millisecond;
                     }
-					
-					String antNrDual = getDualValue(antNr[i]);
 
-					String[] csvFileContent = new String[7];
+					String[] csvFileContent = new String[8];
 					csvFileContent[0] = Integer.toString(vID);
 					csvFileContent[1] = Integer.toString(lID);
 					csvFileContent[2] = Integer.toString(serialNumber[i]);
 					csvFileContent[3] = time[i];
-					csvFileContent[4] = antNrDual;
-					csvFileContent[5] = uniqeNumber[i];
-					csvFileContent[6] = cTime;
+					csvFileContent[4] = antNr[i];
+					csvFileContent[5] = rssi[i];					
+					csvFileContent[6] = uniqeNumber[i];
+					csvFileContent[7] = cTime;
 
                     csv.write(csvFileContent);
-                    LogWriter.write(serialNumberHex[i] + " - " + antNrDual + " - " + serialNumber[i] + "\n");
+                    LogWriter.write(serialNumberHex[i] + " - " + antNr[i] + " - " + rssi[i] + " - " + serialNumber[i] + "\n");
                     
-					derbyInsertString += "('" + cTime + "', '" + date[i] + " " + time[i].substring(0, 10) + "', " + time[i].substring(9, 10) + ", '" + serialNumberHex[i] + "', '" + serialNumber[i] + "')";
-					mySqlInsertString += "(" + vID +"," + lID + ", '" + serialNumber[i] +"', '" + date[i] + " " + time[i].substring(0, 8) +"', " + time[i].substring(9, 12) + ", '" + host + "')";
+					derbyInsertString += "('" + cTime + "', "
+							+ "'" + date[i] + " " + time[i].substring(0, 10) + "', "
+							+ "" + time[i].substring(9, 10) + ", "
+							+ "'" + serialNumberHex[i] + "', "
+							+ "'" + serialNumber[i] + "', "
+							+ "'" + antNr[i] + "', "
+							+ rssi[i] + ")";
+					mySqlInsertString += "(" + vID +","
+							+ "" + lID + ", "
+							+ "'" + serialNumber[i] +"', "
+							+ "'" + date[i] + " " + time[i].substring(0, 8) +"', "
+							+ "" + time[i].substring(9, 12) + ", "
+							+ "'" + host + "', "
+							+ "'" + antNr[i] + "', "
+							+ rssi[i] + ")";
  
 					if(i < brmItems.length - 1) {
 						derbyInsertString += ",\n";
@@ -258,6 +277,40 @@ public class BrmReadThread implements Runnable, FeIscListener {
         }
     }
     
+	private String getAntData(FedmBrmTableItem fedmBrmTableItem, String key) {
+		
+		String res = "0";
+		byte b = 0;
+		try {
+			if(fedmBrmTableItem.getIntegerData(FedmIscReaderConst.DATA_ANT_NR) == 0) {
+				HashMap<Integer, FedmIscRssiItem> item;
+	
+				item = fedmBrmTableItem.getRSSI();
+		        for(int i=1; i < 5; i++) {
+		            if(item.get(i) != null) {
+		                FedmIscRssiItem fedmIscRssiItem = (item.get(i));
+						if(key.equals("RSSI")) { b = fedmIscRssiItem.RSSI; }
+						if(key.equals("NR")) { b = fedmIscRssiItem.antennaNumber; }
+						res = b + "";
+		            }
+		    	}
+	
+			} else {
+				if(key.equals("NR")) {
+					if (fedmBrmTableItem.isDataValid(FedmIscReaderConst.DATA_ANT_NR)) { // ant nr
+						res = fedmBrmTableItem.getStringData(FedmIscReaderConst.DATA_ANT_NR);
+						res = getDualValue(res);
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res + "";
+	}
+
 	public String getComputerTime() {
 		Date now = new java.util.Date();
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
@@ -266,6 +319,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
 
 
 	private String getDualValue(String antNr) {
+
 		int r; // Rest r
 		
 		int dez = Integer.parseInt(antNr, 16);
