@@ -717,6 +717,8 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			writeTag.setNewSnr(intStNr);
 			writeTag.setSleepTime(Integer.parseInt(jTextFieldSleepTime.getText())*1000);
 			writeTag.setFeigGuiListener(this);
+            writeTag.setTagsPerNumber(ReadConfig.getConfig().getInt("TAGSPERNUMBER"));
+            writeTag.init();
 			writeTag.run();
             runner = new Thread(writeTag);
             writeTag.setRunning(true);
@@ -841,6 +843,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	}
 
 	private void jButtonSetStartTimeActionPerformed(ActionEvent evt) {
+		sDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		if((sTime.equals(sDate + " 00:00:00") && (jTextFieldStartTime.getText().equals(sDate + " 00:00:00")))|| jTextFieldStartTime.getText().equals("")) {
 			String nowTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
 			sTime = sDate + " " + nowTime;
