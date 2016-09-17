@@ -105,6 +105,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	private static JTextField jTextFieldTrValidTime;
 	private static JTextField jTextFieldFileName;
 	private static JTextField jTextFieldPower;
+	private static JTextField jTextAntennasValue;
 	private static JCheckBox databaseCheckBox;
 	private JTable dataTable;
 
@@ -384,11 +385,18 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 	        			jLabelAntennasRead.setName("jLabelAntennas");
 	        		}
 	        		{
+	        			/*
 	        			jLabelAntennasValue = new JLabel("",SwingConstants.LEFT);
 	        			jPanelReadFields.add(jLabelAntennasValue, new GridBagConstraints(1, 9, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 	        			jLabelAntennasValue.setText("-");
 	        			jLabelAntennasValue.setName("jLabelAntennasValue");
 	        			jLabelAntennasValue.setPreferredSize(new java.awt.Dimension(50, 13));
+	        			*/	        			
+	        			jTextAntennasValue = new JTextField();
+	        			jPanelReadFields.add(jTextAntennasValue, new GridBagConstraints(1, 9, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+	        			jTextAntennasValue.setName("jAntennasValue");
+	        			jTextAntennasValue.setText("0000");
+	        			jTextAntennasValue.setPreferredSize(new java.awt.Dimension(40, 19));
 	        		}
 	        		{
 	        			jLabelIp = new JLabel();
@@ -781,6 +789,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			databaseCheckBox.setEnabled(true);
 			jLabelUseUniqeId.setEnabled(false);
 			jCheckBoxUniqeId.setEnabled(false);
+			jTextAntennasValue.setEnabled(true);
 		} else {
 			jPanelReadTabel.setVisible(false);
 			jPanelWriteArea.setVisible(true);
@@ -800,6 +809,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 			databaseCheckBox.setEnabled(false);
 			jLabelUseUniqeId.setEnabled(true);
 			jCheckBoxUniqeId.setEnabled(true);
+			jTextAntennasValue.setEnabled(true);
 		}
 	}
 	
@@ -876,6 +886,7 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
     	if(con.isConnected()) {
 	    	SetAntenna setAnt = new SetAntenna();
 	    	setAnt.setFedmIscReader(fedm);
+	    	setAnt.setAntennas(jTextAntennasValue.getText());
 	    	setAnt.run();
     	} else {
     		setMessage("Can not connect", 2000);
@@ -954,7 +965,8 @@ public class FeigRfid extends javax.swing.JFrame implements FeigGuiListener {
 		readerInfo = info.run();
 
 		jTextFieldTrValidTime.setText(readerInfo[1]);
-		jLabelAntennasValue.setText(readerInfo[3]);
+		//jLabelAntennasValue.setText(readerInfo[3]);
+		jTextAntennasValue.setText(readerInfo[3]);
 		jLabelModeValueRead.setText(readerInfo[0]);
 		jTextFieldPower.setText(readerInfo[4]);
 		

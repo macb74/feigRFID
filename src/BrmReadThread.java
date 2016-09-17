@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import de.feig.FeHexConvert;
-import de.feig.FeIscListener;
 import de.feig.FePortDriverException;
 import de.feig.FeReaderDriverException;
 import de.feig.FedmBrmTableItem;
@@ -25,7 +24,7 @@ import de.feig.FedmIscRssiItem;
  *
  * @author Martin Bussmann
  */
-public class BrmReadThread implements Runnable, FeIscListener {
+public class BrmReadThread implements Runnable {
     
 	public synchronized void run() {
         try {  
@@ -40,10 +39,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
             	
                 if(con.isConnected()) {
                 	feigGuiListener.onReaderConnect(true);
-                	
-		        	fedm.addEventListener(this, FeIscListener.RECEIVE_STRING_EVENT);
-		        	fedm.addEventListener(this, FeIscListener.SEND_STRING_EVENT);
-	            	
+                		            	
 	   		        fedm.setTableSize(FedmIscReaderConst.BRM_TABLE, 256);
 	            	
 	            	readBuffer(this.fedm, this.sets, this.db);
@@ -51,9 +47,6 @@ public class BrmReadThread implements Runnable, FeIscListener {
 	                if ((fedm.getLastError() >= 0) && clear) {
 	                    clearBuffer(this.fedm);
 	                }
-
-		        	fedm.removeEventListener(this, FeIscListener.RECEIVE_STRING_EVENT);
-		        	fedm.removeEventListener(this, FeIscListener.SEND_STRING_EVENT);
 	                
 	                con.fedmCloseConnection();
 
@@ -158,10 +151,21 @@ public class BrmReadThread implements Runnable, FeIscListener {
                     antNr[i] = getAntData(brmItems[i], "NR");
                                         
 					if (brmItems[i].isDataValid(FedmIscReaderConst.DATA_TIMER)) { // Timer
-                        String year  = Integer.toString(brmItems[i].getReaderTime().getYear());
-                        String month = Integer.toString(brmItems[i].getReaderTime().getMonth());
-                        String day   = Integer.toString(brmItems[i].getReaderTime().getDay());
                         
+						switch(readerInfo.readerType)
+			            {
+			                case de.feig.FedmIscReaderConst.TYPE_ISCLRU1002:
+			                	date[i]   = SetTime.getComputerDate();
+			                	break;
+			                default:
+								String year  = Integer.toString(brmItems[i].getReaderTime().getYear());
+		                        String month = Integer.toString(brmItems[i].getReaderTime().getMonth());
+		                        String day   = Integer.toString(brmItems[i].getReaderTime().getDay());
+		                        date[i] = year + "-" + month + "-" + day;
+			            		break;
+			            }
+						
+
 						String hour = Integer.toString(brmItems[i].getReaderTime().getHour());
                         if (hour.length() == 1) {
                             hour = "0" + hour;
@@ -182,7 +186,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
                             millisecond = "0" + millisecond;
                         }
                         
-                        date[i] = year + "-" + month + "-" + day;
+
                         
                         time[i] = hour
                                  + ":"
@@ -213,6 +217,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
 							+ "'" + serialNumber[i] + "', "
 							+ "'" + antNr[i] + "', "
 							+ rssi[i] + ")";
+					
 					mySqlInsertString += "(" + vID +","
 							+ "" + lID + ", "
 							+ "'" + serialNumber[i] +"', "
@@ -416,23 +421,7 @@ public class BrmReadThread implements Runnable, FeIscListener {
     public void setDB(boolean db) {
         this.db = db;
     }
-    
-	public void onReceiveProtocol(FedmIscReader reader, byte[] receiveProtocol) {   
-	}
-	
-	public void onSendProtocol(FedmIscReader reader, byte[] sendProtocol) {
-	}
-
-	public void onReceiveProtocol(FedmIscReader arg0, String arg1) {
-//		protocollListener.setProtocoll(arg1);
-		LogWriter.write(arg1);
-	}
-
-	public void onSendProtocol(FedmIscReader arg0, String arg1) {
-//		protocollListener.setProtocoll(arg1);	
-		LogWriter.write(arg1);
-	}
-	
+    	
 	public void setHost(String host) {
 		this.host = host;
 	}

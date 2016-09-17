@@ -26,9 +26,9 @@ public class SetValidTime {
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_WRITE_CFG_ADR, cfgAdr);
 			fedm.setConfigPara(de.feig.ReaderConfig.OperatingMode.BufferedReadMode.Filter.TransponderValidTime, vt, true);
 			fedm.sendProtocol((byte)0x81);
-			fedm.sendProtocol((byte)0x64);
-
-			LogWriter.write("Reset...");
+			
+			//fedm.sendProtocol((byte)0x64);
+			//LogWriter.write("Reset...");
 
 		} catch (FePortDriverException e) {
 			// TODO Auto-generated catch block

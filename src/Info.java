@@ -19,7 +19,7 @@ public class Info {
 		String stMode = null;
 		String[] returnString = new String[6];
 		
-		try {
+		try {			
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG, (byte)0);
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG_LOC, true); // aus dem RAM lesen
 
@@ -37,13 +37,13 @@ public class Info {
 			// Antennas
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG_ADR, antennaAdr);
 			fedm.sendProtocol((byte)0x80);
-			int intAntenna = fedm.getConfigParaAsInteger(de.feig.ReaderConfig.AirInterface.Multiplexer.UHF.Internal.NoOfAntennas, true);
-
+			int intAntenna = fedm.getConfigParaAsInteger(de.feig.ReaderConfig.AirInterface.Multiplexer.UHF.Internal.SelectedAntennas, true);
+			
 			// RF Power
 			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_READ_CFG_ADR, rfAdr);
 			fedm.sendProtocol((byte)0x80);
 			int intRf = fedm.getConfigParaAsInteger(de.feig.ReaderConfig.AirInterface.Antenna.UHF.No1.OutputPower, true);
-
+			
 //			fedm.setData(FedmIscReaderID.FEDM_ISC_TMP_WRITE_CFG_ADR, RelaisAdr);
 //			fedm.sendProtocol((byte)0x80);
 //			int intRelais = fedm.getConfigParaAsInteger(de.feig.ReaderConfig.DigitalIO.Relay.No1.ReadEventActivation.AntennaNo, true);
@@ -53,10 +53,14 @@ public class Info {
 			
 			SetTime setTime = new SetTime();
 			setTime.setFedmIscReader(fedm);
-			//String readerTime = setTime.getReaderTime();
 			String readerTime = setTime.getReaderDateTime().substring(0, 19);
 			intVTime = intVTime/10;
 			int rf = (intRf - 15) * 100;
+
+			String strAntenna = Integer.toBinaryString(intAntenna);
+			while (strAntenna.length() < 4) {
+				strAntenna = "0" + strAntenna;
+			}
 			
 //			System.out.println("Mode...................." + stMode );
 //			System.out.println("TransponderValidTime...." + intVTime + " sec");
@@ -67,7 +71,7 @@ public class Info {
 			returnString[0] = stMode;
 			returnString[1] = Integer.toString(intVTime);
 			returnString[2] = readerTime;
-			returnString[3] = Integer.toString(intAntenna);
+			returnString[3] = strAntenna;
 			returnString[4] = Integer.toString(rf);
 			//returnString[5] = Integer.toString(rf);
 
