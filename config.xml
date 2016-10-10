@@ -26,5 +26,5 @@
 <entry key="LOG">1</entry>
 <entry key="USE_MEMORY_DB">0</entry>
 <entry key="HEADLESS">false</entry>
-<entry key="TAGSPERNUMBER">2</entry>
+<entry key="TAGSPERNUMBER">1</entry>
 </properties>

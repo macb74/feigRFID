@@ -43,9 +43,6 @@ public class WriteTag implements Runnable, FeIscListener {
 
 					try {
 						fedm.setTableSize(FedmIscReaderConst.ISO_TABLE, 128);
-						fedm.addEventListener(this, FeIscListener.RECEIVE_STRING_EVENT);
-						fedm.addEventListener(this, FeIscListener.SEND_STRING_EVENT);
-
 					} catch (FedmException e) {
 						e.printStackTrace();
 					}
@@ -76,14 +73,6 @@ public class WriteTag implements Runnable, FeIscListener {
 							feigGuiListener.setProtocoll("ACHTUNG: Neue Nummer ist FALSCH!!!\n");
 							success = false;
 						}
-					}
-
-					try {
-						fedm.removeEventListener(this, FeIscListener.RECEIVE_STRING_EVENT);
-						fedm.removeEventListener(this, FeIscListener.SEND_STRING_EVENT);
-
-					} catch (FedmException e) {
-						e.printStackTrace();
 					}
 
 					feigGuiListener.onReaderConnect(false);
