@@ -32,6 +32,9 @@ public class DataTableWriteToCsvThread implements Runnable {
 			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equalsIgnoreCase("StartuLaufzeit")) {
 				csvFormat = 3;
 			}
+			if(ReadConfig.getConfig().getString("RESULT_FORMAT").equalsIgnoreCase("giveMeAll")) {
+				csvFormat = 4;
+			}
 		}
 		
 		switch (csvFormat) {
@@ -43,6 +46,8 @@ public class DataTableWriteToCsvThread implements Runnable {
 				break;
 		case 3: startulaufzeitResult(tableData);
 				break;
+		case 4: giveMeAll(tableData);
+		break;
 		}
 				
 	}
@@ -109,6 +114,38 @@ public class DataTableWriteToCsvThread implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	
+	private void giveMeAll(String[][] tableData) {
+		try {
+			outFile.append("Startnummer;Seriennummer;Runden;ReaderZeit;Zielzeit;ZielzeitZehntel;Antennen;RSSI\n");
+			
+			for (int i = 0; i < tableData.length; i++) {
+				String startnummer  = tableData[i][0];
+				String runden       = tableData[i][1];
+				String zeit         = tableData[i][2];
+				String seriennummer = tableData[i][3];
+				String antenna      = tableData[i][5];
+				String rssi         = tableData[i][6];
+				String zielZeit     = CalculateTime.calcTime(sTime, zeit);
+				String zielZeitZ    = CalculateTime.calcTime(sTime, zeit) + "." + tableData[i][4];
+	
+
+				outFile.append(startnummer + ";" +
+						seriennummer + ";" +
+						runden + ";" +
+						zeit + ";" +
+						zielZeit + ";" +
+						zielZeitZ + ";" +
+						antenna + ";" +
+						rssi + 
+						"\n");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
